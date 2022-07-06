@@ -38,10 +38,29 @@ describe("#users.list", () => {
     expect(body.data[0].id).toEqual(user.id);
   });
 
-  it("should allow filtering to suspended users", async () => {
+  it("should not allow non-admins to list suspended users", async () => {
     const user = await buildUser({
       name: "Tester",
     });
+    await buildUser({
+      name: "Tester",
+      teamId: user.teamId,
+      suspendedAt: new Date(),
+    });
+    const res = await server.post("/api/users.list", {
+      body: {
+        query: "test",
+        filter: "suspended",
+        token: user.getJwtToken(),
+      },
+    });
+    const body = await res.json();
+    expect(res.status).toEqual(200);
+    expect(body.data.length).toEqual(1);
+  });
+
+  it("should allow admins to list and filter to suspended users", async () => {
+    const user = await buildAdmin();
     await buildUser({
       name: "Tester",
       teamId: user.teamId,

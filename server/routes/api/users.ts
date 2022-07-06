@@ -114,6 +114,11 @@ router.post("users.list", auth(), pagination(), async (ctx) => {
     }),
   ]);
 
+  // Only admins should see suspended users
+  if (!actor.isAdmin) {
+    users.filter((user) => !user.isSuspended);
+  }
+
   ctx.body = {
     pagination: { ...ctx.state.pagination, total },
     data: users.map((user) =>
