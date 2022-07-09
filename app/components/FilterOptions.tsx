@@ -1,10 +1,12 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useMenuState, MenuButton } from "reakit/Menu";
 import styled from "styled-components";
 import Button, { Inner } from "~/components/Button";
 import ContextMenu from "~/components/ContextMenu";
 import MenuItem from "~/components/ContextMenu/MenuItem";
 import Text from "~/components/Text";
+import InputSearch from "./InputSearch";
 
 type TFilterOption = {
   key: string;
@@ -14,6 +16,7 @@ type TFilterOption = {
 
 type Props = {
   options: TFilterOption[];
+  column: string;
   activeKey: string | null | undefined;
   defaultLabel?: string;
   selectedPrefix?: string;
@@ -23,12 +26,14 @@ type Props = {
 
 const FilterOptions = ({
   options,
+  column = "",
   activeKey = "",
   defaultLabel = "Filter options",
   selectedPrefix = "",
   className,
   onSelect,
 }: Props) => {
+  const { t } = useTranslation();
   const menu = useMenuState({
     modal: true,
   });
@@ -47,6 +52,12 @@ const FilterOptions = ({
         )}
       </MenuButton>
       <ContextMenu aria-label={defaultLabel} {...menu}>
+        {column === "authors" && (
+          <InputSearch
+            onChange={handleFilter}
+            placeholder={`${t("Filter")}…`}
+          />
+        )}
         {options.map((option) => (
           <MenuItem
             key={option.key}
