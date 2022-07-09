@@ -7,6 +7,7 @@ import ContextMenu from "~/components/ContextMenu";
 import MenuItem from "~/components/ContextMenu/MenuItem";
 import Text from "~/components/Text";
 import InputSearch from "./InputSearch";
+import PaginatedList from "./PaginatedList";
 
 type TFilterOption = {
   key: string;
@@ -69,32 +70,58 @@ const FilterOptions = ({
         )}
       </MenuButton>
       <ContextMenu aria-label={defaultLabel} {...menu}>
-        {column === "authors" && (
-          <InputSearch
-            onChange={handleFilter}
-            placeholder={`${t("Filter")}…`}
-          />
+        {column === "authors" ? (
+          <>
+            <InputSearch
+              onChange={handleFilter}
+              placeholder={`${t("Filter")}…`}
+            />
+            <PaginatedList
+              items={filteredData}
+              renderItem={(option: TFilterOption) => (
+                <MenuItem
+                  key={option.key}
+                  onClick={() => {
+                    onSelect(option.key);
+                    menu.hide();
+                  }}
+                  selected={option.key === activeKey}
+                  {...menu}
+                >
+                  {option.note ? (
+                    <LabelWithNote>
+                      {option.label}
+                      <Note>{option.note}</Note>
+                    </LabelWithNote>
+                  ) : (
+                    option.label
+                  )}
+                </MenuItem>
+              )}
+            />
+          </>
+        ) : (
+          filteredData.map((option) => (
+            <MenuItem
+              key={option.key}
+              onClick={() => {
+                onSelect(option.key);
+                menu.hide();
+              }}
+              selected={option.key === activeKey}
+              {...menu}
+            >
+              {option.note ? (
+                <LabelWithNote>
+                  {option.label}
+                  <Note>{option.note}</Note>
+                </LabelWithNote>
+              ) : (
+                option.label
+              )}
+            </MenuItem>
+          ))
         )}
-        {filteredData.map((option) => (
-          <MenuItem
-            key={option.key}
-            onClick={() => {
-              onSelect(option.key);
-              menu.hide();
-            }}
-            selected={option.key === activeKey}
-            {...menu}
-          >
-            {option.note ? (
-              <LabelWithNote>
-                {option.label}
-                <Note>{option.note}</Note>
-              </LabelWithNote>
-            ) : (
-              option.label
-            )}
-          </MenuItem>
-        ))}
       </ContextMenu>
     </Wrapper>
   );
