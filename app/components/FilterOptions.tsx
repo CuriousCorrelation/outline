@@ -44,6 +44,10 @@ const FilterOptions = ({
 
   const [filteredData, setFilteredData] = React.useState<TFilterOption[]>([]);
 
+  React.useEffect(() => {
+    setFilteredData(options);
+  }, [options]);
+
   return (
     <Wrapper>
       <MenuButton {...menu}>
