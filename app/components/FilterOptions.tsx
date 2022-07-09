@@ -46,15 +46,26 @@ const FilterOptions = ({
 
   const [filteredData, setFilteredData] = React.useState<TFilterOption[]>([]);
 
-  const handleFilter = React.useCallback((event) => {
-    const { value } = event.target;
-    if (value) {
-      const filteredData = options.filter((user) =>
-        user.label.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredData(filteredData);
-    }
-  }, []);
+  // User should see prior search results first when clicking on author dropdown.
+  // If user clicks on search box, they should see all available authors.
+  const handleFocus = React.useCallback(() => {
+    setFilteredData(options);
+  }, [options]);
+
+  // Checks if text appears in any author's name.
+  // Case-insensitive.
+  const handleFilter = React.useCallback(
+    (event) => {
+      const { value } = event.target;
+      if (value) {
+        const filteredData = options.filter((user) =>
+          user.label.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredData(filteredData);
+      }
+    },
+    [options]
+  );
 
   React.useEffect(() => {
     setFilteredData(options);
