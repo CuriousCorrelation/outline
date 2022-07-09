@@ -37,12 +37,23 @@ const FilterOptions = ({
   const menu = useMenuState({
     modal: true,
   });
+
   const selected =
     options.find((option) => option.key === activeKey) || options[0];
 
   const selectedLabel = selected ? `${selectedPrefix} ${selected.label}` : "";
 
   const [filteredData, setFilteredData] = React.useState<TFilterOption[]>([]);
+
+  const handleFilter = React.useCallback((event) => {
+    const { value } = event.target;
+    if (value) {
+      const filteredData = options.filter((user) =>
+        user.label.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredData(filteredData);
+    }
+  }, []);
 
   React.useEffect(() => {
     setFilteredData(options);
