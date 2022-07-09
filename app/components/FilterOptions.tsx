@@ -42,6 +42,8 @@ const FilterOptions = ({
 
   const selectedLabel = selected ? `${selectedPrefix} ${selected.label}` : "";
 
+  const [filteredData, setFilteredData] = React.useState<TFilterOption[]>([]);
+
   return (
     <Wrapper>
       <MenuButton {...menu}>
@@ -58,7 +60,7 @@ const FilterOptions = ({
             placeholder={`${t("Filter")}…`}
           />
         )}
-        {options.map((option) => (
+        {filteredData.map((option) => (
           <MenuItem
             key={option.key}
             onClick={() => {
